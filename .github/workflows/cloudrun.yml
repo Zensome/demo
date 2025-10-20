@@ -23,16 +23,6 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@v4"
 
-      - name: "Apply paths filter"
-        uses: "dorny/paths-filter@v3"
-        id: "filter"
-        with:
-          filters: |
-            backend:
-              - "backend/**"
-            frontend:
-              - "frontend/**"
-
       - id: "auth"
         name: "Authenticate to Google Cloud"
         uses: "google-github-actions/auth@v2"
@@ -52,7 +42,6 @@ jobs:
 
       # Build and deploy backend first
       - name: "Build and Push Backend Container"
-        if: steps.filter.outputs.backend == 'true'
         working-directory: ./backend
         run: |-
           DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/cloudrun-backend/backend:${{ github.sha }}"
@@ -60,7 +49,6 @@ jobs:
           docker push "${DOCKER_TAG}"
 
       - name: "Deploy Backend to Cloud Run"
-        if: steps.filter.outputs.backend == 'true'
         id: deploy-backend
         uses: "google-github-actions/deploy-cloudrun@v2"
         with:
@@ -78,7 +66,6 @@ jobs:
 
       # Build and deploy frontend
       - name: "Build and Push Frontend Container"
-        if: steps.filter.outputs.frontend == 'true'
         working-directory: ./frontend
         env:
           VITE_API_URL: "${{ env.BACKEND_URL }}"
@@ -92,7 +79,6 @@ jobs:
           docker push "${DOCKER_TAG}"
 
       - name: "Deploy Frontend to Cloud Run"
-        if: steps.filter.outputs.frontend == 'true'
         id: deploy-frontend
         uses: "google-github-actions/deploy-cloudrun@v2"
         with:
