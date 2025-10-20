@@ -6,6 +6,7 @@ import {
   type ValidationErrors,
 } from "./utils/validate";
 import { submitAccount, getDownloadUrl } from "./api/api";
+import { downloadFile } from "./utils/download";
 
 function App() {
   const [formData, setFormData] = useState<FormData>({
@@ -26,7 +27,7 @@ function App() {
 
     try {
       const data = await submitAccount(formData);
-      setDownloadUrl(getDownloadUrl(data.filename));
+      setDownloadUrl(data.filename);
       setFormData({ name: "", email: "", password: "" });
       setErrors({});
     } catch (error) {
@@ -34,10 +35,15 @@ function App() {
     }
   };
 
+  const handleDownload = async () => {
+    if (!downloadUrl) return;
+    await downloadFile(getDownloadUrl(downloadUrl), downloadUrl);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white p-8 rounded shadow-md w-96">
-        <h1 className="text-2xl font-bold mb-2">Account Form</h1>
+        <h1 className="text-2xl font-bold mb-2">Data Form</h1>
         <p className="text-sm text-gray-500 mb-4">
           Enter your info and submit to get a download link for your encrypted
           data.
@@ -99,13 +105,12 @@ function App() {
 
         {downloadUrl && (
           <div className="mt-4">
-            <a
-              href={downloadUrl}
-              className="text-blue-500 hover:underline"
-              download
+            <button
+              onClick={handleDownload}
+              className="text-blue-500 hover:underline cursor-pointer"
             >
               Download submitted data
-            </a>
+            </button>
           </div>
         )}
       </div>
