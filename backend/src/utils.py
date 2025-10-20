@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 load_dotenv()
 DATA_FOLDER = os.getenv("DATA_FOLDER")
 
+os.makedirs(DATA_FOLDER, exist_ok=True)
+
 
 def save_data(data: str, filename: str):
     """Saves the data to the file"""
