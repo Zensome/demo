@@ -1,6 +1,11 @@
+# Frontend
 frontend/node_modules
 
-.DS_Store
-
+# Backend
 backend/data
-backend/.env
+
+# General
+.env
+
+# OS
+.DS_Store
