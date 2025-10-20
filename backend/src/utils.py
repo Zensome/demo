@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-DATA_FOLDER = os.getenv("DATA_FOLDER")
+DATA_FOLDER = os.getenv("DATA_FOLDER", "/app/data")
 
 os.makedirs(DATA_FOLDER, exist_ok=True)
 
